@@ -26,7 +26,7 @@
 
         <div id="page-wrapper" class="gray-bg">
             <?=$header;?>
-            
+
             <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2>Member Fee Collection</h2>
@@ -46,7 +46,7 @@
 
                 </div>
             </div>
-        
+
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox float-e-margins">
@@ -88,7 +88,7 @@
                                         <label class="control-label">{{$member->package->name}} {{$member->package->no_of_months}} Months</label>
                                     </div>
 
-                                    
+
                                 </div>
 
                                 <div class="form-group">
@@ -98,10 +98,24 @@
                                         <input type="number" class="form-control" name="amount" required value="{{$member->package->price}}" >
                                     </div>
 
-                                    <label class="col-sm-2 control-label">Date</label>
+                                    <label class="col-sm-2 control-label">Payment Date</label>
 
                                     <div class="col-sm-4">
                                         <input type="date" class="form-control" name="date" value="<?php echo date('Y-m-d'); ?>" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label"></label>
+
+                                    <div class="col-sm-4">
+                                        <input type="hidden" class="form-control" name="amount" required value="{{$member->package->price}}" >
+                                    </div>
+
+                                    <label class="col-sm-2 control-label">Package Expire At</label>
+
+                                    <div class="col-sm-4">
+                                        <input type="date" class="form-control" name="package_expire_at_date" value="{{$package_expire_at}}" required>
                                     </div>
                                 </div>
 
@@ -120,7 +134,7 @@
                                         </select>
                                     </div>
 
-                                    
+
                                 </div>
 
                                 <div class="form-group">
@@ -130,20 +144,20 @@
                                         <textarea name="note" id="" cols="49" rows="3"></textarea>
                                     </div>
 
-                                    
+
                                 </div>
 
-                                
 
-                                
 
-                                
 
-                                
-                                
-                                
-                               
-                                
+
+
+
+
+
+
+
+
 
                                 <div class="hr-line-dashed"></div>
                                 <div class="form-group">
@@ -154,8 +168,8 @@
                             </form>
                         </div>
                     </div>
-                    
-                    
+
+
 
                 </div>
             </div>
@@ -164,7 +178,7 @@
 
     </div>
 
-    
+
 
     <!-- Mainly scripts -->
     <script src="{{asset('adminsite')}}/js/jquery-2.1.1.js"></script>
@@ -188,7 +202,7 @@
         </script>
 
         <script>
-           
+
             let count=0;
          function participate(e){
                 if(count==0){
@@ -202,7 +216,7 @@
                     $('#trainers').fadeOut(10)
                 }
             }
-        
+
         </script>
 </body>
 

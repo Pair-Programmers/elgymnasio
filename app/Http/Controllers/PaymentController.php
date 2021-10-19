@@ -9,6 +9,8 @@ use App\Models\Member;
 use App\Models\Payee;
 use App\Models\Payment;
 use App\Models\Account;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class PaymentController extends Controller
 {
@@ -19,7 +21,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        
+
     }
 
     /**
@@ -27,12 +29,17 @@ class PaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showCreatePage($id)
+     public function showCreatePage($id)
     {
         $member = Member::find($id);
         $accounts = Account::all();
 
-        $view = View::make('adminsite/payment_add', ['member'=>$member, 'accounts'=>$accounts]);
+        $expire_date = $member->package_expire_at;
+        $no_of_months = $member->package->no_of_months;
+
+        $view = View::make('adminsite/payment_add', ['member'=>$member, 'accounts'=>$accounts,
+        'package_expire_at'=>date('Y-m-d',strtotime( $no_of_months .' month', strtotime($expire_date)))]);
+
         $view->nest('sidebar','adminsite/templates/sidebar');
         $view->nest('header','adminsite/templates/header');
         $view->nest('footer','adminsite/templates/footer');
@@ -51,25 +58,28 @@ class PaymentController extends Controller
         return $view;
     }
 
-    
+
     public function store(Request $request)
     {
-        
+
         $inputs = $request->all();
         $inputs['group'] = "Credit";
         $inputs['type'] = "Package Charges";
         $payment = Payment::create($inputs);
 
         $member = Member::find($request->member_id);
-        
-        $expire_date = $member->package_expire_at;
-        $no_of_months = $member->package->no_of_months;
-        $member->update(['package_expire_at'=>date('Y-m-d',strtotime( $no_of_months .' month', strtotime($expire_date)))]);
-        
+
+        // $expire_date = $member->package_expire_at;
+        // $no_of_months = $member->package->no_of_months;
+        // $member->update(['package_expire_at'=>date('Y-m-d',strtotime( $no_of_months .' month', strtotime($expire_date)))]);
+
+        $package_expire_at = $inputs['package_expire_at_date'];
+        $member->update(['package_expire_at'=>$package_expire_at]);
+
         return redirect()->route('payment_show_fee_invoice', $payment->id);
     }
 
-    
+
     public function showCollectFeeInvoicePage($id)
     {
         $payment = Payment::find($id);
@@ -89,7 +99,7 @@ class PaymentController extends Controller
         $view->nest('header','adminsite/templates/header');
         return $view;
     }
-    
+
     public function showEdit()
     {
         $view = View::make('adminsite/member_edit');
@@ -100,10 +110,10 @@ class PaymentController extends Controller
 
     public function edit($id)
     {
-        
+
     }
 
-    
+
     public function update(Request $request)
     {
         $request;
@@ -116,7 +126,7 @@ class PaymentController extends Controller
         $requestData = $request->all();
 
         if(!empty($request->image_path)){
-            $imageName = time().'_'.$request->name.'.'.$request->image_path->extension();  
+            $imageName = time().'_'.$request->name.'.'.$request->image_path->extension();
             $request->image_path->move(public_path('images/members'), $imageName);
             $requestData['image_path'] = $imageName;
         }
@@ -135,32 +145,52 @@ class PaymentController extends Controller
         return redirect()->back()->with('success', 'Deleted Successfuly !');
     }
 
-    public function showList()
+    public function showListPage()
     {
-        //return Member::all();
-        $members = Member::join('packages', 'packages.id', 'package_id')
-                                    ->leftJoin('payees', 'payees.id', 'payee_id')
-                                    ->select('members.*',
-                                    'packages.name as package_name',
-                                    'packages.no_of_months as package_months',
-                                    'payees.name as trainer_name')
-                                    ->orderBy('members.created_at', 'desc')
-                                    ->get();
 
-        $view = View::make('adminsite/member_list', ['members'=>$members]);
+        
+        //\App\Models\User::create(['name'=>'Malik Qasim', 'email'=>'malikqaxim36@gmail.com', 'password'=>Hash::make('qasim12345')]);
+        //return Member::all();
+        $payments = Payment::all();
+
+        $totalAmount = 0;
+        foreach ($payments as $key => $payment) {
+            $totalAmount =  $totalAmount + $payment->amount;
+        }
+
+        $view = View::make('adminsite/payment_list', ['payments'=>$payments, 'totalAmount'=>$totalAmount]);
         $view->nest('sidebar','adminsite/templates/sidebar');
         $view->nest('header','adminsite/templates/header');
+        $view->nest('footer','adminsite/templates/footer');
         return $view;
     }
 
+    public function showMonthlySearchListPage(Request $request)
+    {
+        //return Member::all();
+        $payments = Payment::where('date', '>=', $request->start_date)->where('date', '<=', $request->start_date)->get();
+
+        $totalAmount = 0;
+        foreach ($payments as $key => $payment) {
+            $totalAmount =  $totalAmount + $payment->amount;
+        }
+
+        $view = View::make('adminsite/payment_list', ['payments'=>$payments, 'totalAmount'=>$totalAmount]);
+        $view->nest('sidebar','adminsite/templates/sidebar');
+        $view->nest('header','adminsite/templates/header');
+        $view->nest('footer','adminsite/templates/footer');
+        return $view;
+    }
+
+
     /////////////////////////////////////////////////Invoices//////////////////////
-    
+
     public function showRegistrationInvoice($id)
     {
         $member = Member::find($id);
         $package = Package::find($member->package_id);
         $trainer = Payee::find($member->payee_id);
-       
+
 
         $view = View::make('adminsite/member_registration_invoice', ['member'=>$member, 'package'=>$package, 'trainer'=>$trainer]);
         $view->nest('sidebar','adminsite/templates/sidebar');
@@ -178,6 +208,6 @@ class PaymentController extends Controller
 
         return $view;
     }
-    
-    
+
+
 }

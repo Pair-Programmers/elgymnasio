@@ -110,7 +110,7 @@
 
 
         <li>
-            <a href="login.html">
+            <a href="{{route('do_logout')}}">
                 <i class="fa fa-sign-out"></i> Log out
             </a>
         </li>
