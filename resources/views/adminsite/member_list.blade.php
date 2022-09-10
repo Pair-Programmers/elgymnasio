@@ -23,9 +23,9 @@
     <div id="wrapper">
 
         <?=$sidebar; ?>
-    
+
             <div id="page-wrapper" class="gray-bg">
-                <?=$header; ?>            
+                <?=$header; ?>
                 <div class="row wrapper border-bottom white-bg page-heading">
                     <div class="col-lg-10">
                         <h2>List of Member</h2>
@@ -42,13 +42,13 @@
                         </ol>
                     </div>
                     <div class="col-lg-2">
-    
+
                     </div>
                 </div>
             <div class="wrapper wrapper-content animated fadeInRight">
                 <div class="row">
-    
-                    
+
+
                     <div class="col-lg-12">
                     <div class="ibox float-e-margins">
                         <div class="ibox-title">
@@ -72,7 +72,7 @@
                             </div>
                         </div>
                         <div class="ibox-content">
-    
+
                             <div class="table-responsive">
                         <table class="table table-striped table-bordered table-hover dataTables-example" >
                         <thead>
@@ -92,8 +92,8 @@
                         <tbody>
                             @php
                             $counter = 1;
-                        @endphp 
-                        
+                        @endphp
+
                         @foreach($members as $member)
                             <tr class="gradeX">
                                 <td class="center">{{$member->id}}</td>
@@ -103,10 +103,10 @@
                                 <td class="center">{{$member->gender}}</td>
                                 <td class="center">{{$member->timing}}</td>
                                 <td class="center">
-                                    @if($member->hire_trainer == '1') 
-                                        $member->trainer_name 
-                                    @else 
-                                        No 
+                                    @if($member->hire_trainer == '1')
+                                        $member->trainer_name
+                                    @else
+                                        No
                                     @endif
                                 </td>
                                 <td class="center">{{$member->package_name}} ({{$member->package_months}} Month)</td>
@@ -125,16 +125,19 @@
                                     <a href="{{ url('/display_payment_create', ['id' => $member->id]) }}">
                                         <small class="label label-danger"><i class="fa"></i>Collect Fee</small>
                                     </a>
-                                    
+
+                                    <a href="https://wa.me/92{{ltrim($member->phone, '0')}}?text={{$lateFeeMessage}}">
+                                        <small class="label label-primary"><i class="fa"></i>WhatsApp</small>
+                                    </a>
                                 </td>
                             </tr>
-    
+
                             @php
                                 $counter = $counter + 1;
-                            @endphp 
+                            @endphp
                         @endforeach
-                        
-                        
+
+
                         </tbody>
                         <tfoot>
                         <tr>
@@ -152,7 +155,7 @@
                         </tfoot>
                         </table>
                             </div>
-    
+
                         </div>
                     </div>
                 </div>
@@ -166,7 +169,7 @@
                     <strong>Copyright</strong> Example Company &copy; 2014-2015
                 </div>
             </div>
-    
+
             </div>
             </div>
 

@@ -218,7 +218,8 @@ class MemberAdminController extends Controller
         //return Member::all();
 
 
-        $view = View::make('adminsite/member_list', ['members'=>$members, 'query'=>$query]);
+        $lateFeeMessage = 'Its%20Fee%20auto%20reminder%20message%20at%20Elgymnasio,%20your%20Gym%20fee%20is%20due%20now%20kindly%20pay%20your%20fees,%20thanks.';
+        $view = View::make('adminsite/member_list', ['members'=>$members, 'query'=>$query, 'lateFeeMessage'=>$lateFeeMessage]);
         $view->nest('sidebar','adminsite/templates/sidebar');
         $view->nest('header','adminsite/templates/header');
         return $view;
